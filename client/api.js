@@ -1,7 +1,7 @@
 const fetchAttractions = () =>
   fetch("/api")
     .then(result => result.json())
-    .catch(console.error);
+    .catch(err => console.error(err));
 
 module.exports = {
   fetchAttractions
