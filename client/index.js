@@ -113,6 +113,6 @@ const buildAttractionAssets = (category, attraction) => {
     console.log(state);
 
     // Animate map to default position & zoom.
-    map.flyTo({ center: fullstackCoords], zoom: 12.3 });
+    map.flyTo({ center: fullstackCoords, zoom: 12.3 });
   });
 };
