@@ -1,4 +1,7 @@
 const mapboxgl = require('mapbox-gl');
+const d3 = require('d3');
+const data = require('../dataset/data.js');
+
 // const api = require('./api');
 const buildMarker = require('./marker.js');
 
@@ -13,11 +16,11 @@ const buildMarker = require('./marker.js');
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
 
-const fullstackCoords = [-73.9654, 40.7829]; // NY
+const centralParkCoords = [-73.9654, 40.7829]; // NY
 
 const map = new mapboxgl.Map({
 	container: 'map',
-	center: fullstackCoords,
+	center: centralParkCoords,
 	zoom: 11, // starting zoom
 	style: 'mapbox://styles/mapbox/streets-v10' // mapbox has lots of different map styles available.
 });
