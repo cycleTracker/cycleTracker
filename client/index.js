@@ -6,11 +6,6 @@ const buildMarker = require("./marker.js");
  * App State
  */
 
-const state = {
-  attractions: {},
-  selectedAttractions: []
-};
-
 /*
   * Instantiate the Map
   */
@@ -26,63 +21,6 @@ const map = new mapboxgl.Map({
   zoom: 12, // starting zoom
   style: "mapbox://styles/mapbox/streets-v10" // mapbox has lots of different map styles available.
 });
-
-/*
-  * Populate the list of attractions
-  */
-
-api.fetchAttractions().then(attractions => {
-  state.attractions = attractions;
-  const { hotels, restaurants, activities } = attractions;
-  hotels.forEach(hotel => makeOption(hotel, "hotels-choices"));
-  restaurants.forEach(restaurant => makeOption(restaurant, "restaurants-choices"));
-  activities.forEach(activity => makeOption(activity, "activities-choices"));
-});
-
-const makeOption = (attraction, selector) => {
-  const option = new Option(attraction.name, attraction.id); // makes a new option tag
-  const select = document.getElementById(selector);
-  select.add(option);
-};
-
-/*
-  * Attach Event Listeners
-  */
-
-// what to do when the `+` button next to a `select` is clicked
-["hotels", "restaurants", "activities"].forEach(attractionType => {
-  document
-    .getElementById(`${attractionType}-add`)
-    .addEventListener("click", () => handleAddAttraction(attractionType));
-});
-
-// Create attraction assets (itinerary item, delete button & marker)
-const handleAddAttraction = attractionType => {
-  const select = document.getElementById(`${attractionType}-choices`);
-  const selectedId = select.value;
-
-  // Find the correct attraction given the category and ID
-  const selectedAttraction = state.attractions[attractionType].find(
-    attraction => +attraction.id === +selectedId
-  );
-
-  // If this attraction is already on state, return
-  if (state.selectedAttractions.find(attraction => attraction.id === +selectedId && attraction.category === attractionType))
-    return;
-
-  //Build and add attraction
-  buildAttractionAssets(attractionType, selectedAttraction);
-};
-
-const buildAttractionAssets = (category, attraction) => {
-  // Create the Elements that will be inserted in the dom
-  const removeButton = document.createElement("button");
-  removeButton.className = "remove-btn";
-  removeButton.append("x");
-
-  const itineraryItem = document.createElement("li");
-  itineraryItem.className = "itinerary-item";
-  itineraryItem.append(attraction.name, removeButton);
 
   // Create the marker
   const marker = buildMarker(category, attraction.place.location);
