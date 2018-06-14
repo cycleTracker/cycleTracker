@@ -60,11 +60,63 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const mapboxgl = __webpack_require__(1);
+// const api = require('./api');
+const buildMarker = __webpack_require__(4);
+
+/*
+ * App State
+ */
+
+/*
+  * Instantiate the Map
+  */
+
+mapboxgl.accessToken =
+	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
+
+const fullstackCoords = [-73.9654, 40.7829]; // NY
+
+const map = new mapboxgl.Map({
+	container: 'map',
+	center: fullstackCoords,
+	zoom: 11, // starting zoom
+	style: 'mapbox://styles/mapbox/streets-v10' // mapbox has lots of different map styles available.
+});
+
+// Create the marker
+// const marker = buildMarker(category, attraction.place.location);
+
+//ADD TO DOM
+// marker.addTo(map);
+
+// Animate the map
+// map.flyTo({ center: attraction.place.location, zoom: 15 });
+
+// Remove the current attrction from the application state
+// state.selectedAttractions = state.selectedAttractions.filter(
+// 	selected => selected.id !== attraction.id || selected.category !== category
+// );
+
+// Remove attraction's elements from the dom & Map
+// itineraryItem.remove();
+// marker.remove();
+
+// console.log(state);
+
+// Animate map to default position & zoom.
+// map.flyTo({ center: fullstackCoords, zoom: 12.3 });
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.mapboxgl = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -531,128 +583,6 @@ module.exports={"$version":8,"$root":{"version":{"required":true,"type":"enum","
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const mapboxgl = __webpack_require__(0);
-const api = __webpack_require__(3);
-const buildMarker = __webpack_require__(4);
-
-/*
- * App State
- */
-
-const state = {
-  attractions: {},
-  selectedAttractions: []
-};
-
-/*
-  * Instantiate the Map
-  */
-
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiY2Fzc2lvemVuIiwiYSI6ImNqNjZydGl5dDJmOWUzM3A4dGQyNnN1ZnAifQ.0ZIRDup0jnyUFVzUa_5d1g";
-
-const map = new mapboxgl.Map({
-  container: "map",
-  center: [-74.009, 40.705], // FullStack coordinates
-  zoom: 12, // starting zoom
-  style: "mapbox://styles/mapbox/streets-v10" // mapbox has lots of different map styles available.
-});
-
-/*
-  * Populate the list of attractions
-  */
-
-api.fetchAttractions().then(attractions => {
-  state.attractions = attractions;
-  const { hotels, restaurants, activities } = attractions;
-  hotels.forEach(hotel => makeOption(hotel, "hotels-choices"));
-  restaurants.forEach(restaurant => makeOption(restaurant, "restaurants-choices"));
-  activities.forEach(activity => makeOption(activity, "activities-choices"));
-});
-
-const makeOption = (attraction, selector) => {
-  const option = new Option(attraction.name, attraction.id); // makes a new option tag
-  const select = document.getElementById(selector);
-  select.add(option);
-};
-
-/*
-  * Attach Event Listeners
-  */
-
-// what to do when the `+` button next to a `select` is clicked
-["hotels", "restaurants", "activities"].forEach(attractionType => {
-  document
-    .getElementById(`${attractionType}-add`)
-    .addEventListener("click", () => handleAddAttraction(attractionType));
-});
-
-// Create attraction assets (itinerary item, delete button & marker)
-const handleAddAttraction = attractionType => {
-  const select = document.getElementById(`${attractionType}-choices`);
-  const selectedId = select.value;
-
-  // Find the correct attraction given the category and ID
-  const selectedAttraction = state.attractions[attractionType].find(
-    attraction => +attraction.id === +selectedId
-  );
-
-  // If this attraction is already on state, return
-  if (state.selectedAttractions.find(attraction => attraction.id === +selectedId && attraction.category === attractionType))
-    return;
-
-  //Build and add attraction
-  buildAttractionAssets(attractionType, selectedAttraction);
-};
-
-const buildAttractionAssets = (category, attraction) => {
-  // Create the Elements that will be inserted in the dom
-  const removeButton = document.createElement("button");
-  removeButton.className = "remove-btn";
-  removeButton.append("x");
-
-  const itineraryItem = document.createElement("li");
-  itineraryItem.className = "itinerary-item";
-  itineraryItem.append(attraction.name, removeButton);
-
-  // Create the marker
-  const marker = buildMarker(category, attraction.place.location);
-
-  // Adds the attraction to the application state
-  state.selectedAttractions.push({ id: attraction.id, category });
-
-  //ADD TO DOM
-  document.getElementById(`${category}-list`).append(itineraryItem);
-  marker.addTo(map);
-
-  // Animate the map
-  map.flyTo({ center: attraction.place.location, zoom: 15 });
-
-  removeButton.addEventListener("click", function remove() {
-    // Stop listening for the event
-    removeButton.removeEventListener("click", remove);
-
-    // Remove the current attrction from the application state
-    state.selectedAttractions = state.selectedAttractions.filter(
-      selected => selected.id !== attraction.id || selected.category !== category
-    );
-
-    // Remove attraction's elements from the dom & Map
-    itineraryItem.remove();
-    marker.remove();
-
-    console.log(state);
-
-    // Animate map to default position & zoom.
-    map.flyTo({ center: [-74.0, 40.731], zoom: 12.3 });
-  });
-};
-
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
@@ -680,24 +610,11 @@ module.exports = g;
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-const fetchAttractions = () =>
-  fetch("/api")
-    .then(result => result.json())
-    .catch(console.error);
-
-module.exports = {
-  fetchAttractions
-};
-
-
-/***/ }),
+/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { Marker } = __webpack_require__(0);
+const { Marker } = __webpack_require__(1);
 
 const iconURLs = {
   hotels: "http://i.imgur.com/D9574Cu.png",

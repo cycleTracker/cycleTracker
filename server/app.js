@@ -10,9 +10,6 @@ app.use(volleyball);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// serve dynamic routes
-app.use('/api', require('./routes'));
-
 // static file-serving middleware
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
