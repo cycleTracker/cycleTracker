@@ -114,32 +114,33 @@ function getEndLL(d) {
 d3.csv('dataSet.csv').then(function(data) {
 	//console.log(data[0], getLL(data[0]), project(data[0]))
 	var dots = svg.selectAll('circle.dot').data(data);
-	dots
-		.enter()
-		.append('circle')
-		.classed('dot', true)
-		.attr('r', 1)
-		.style({
-			fill: '#0082a3',
-			'fill-opacity': 0.6,
-			stroke: '#004d60',
-			'stroke-width': 1
-		})
-		.transition()
-		.duration(1000)
-		.attr('r', 6);
 
 	function render() {
-		// dots.attr({
-		// 	cx: function(d) {
-		// 		var x = project(d, getStartLL).x;
-		// 		return x;
-		// 	},
-		// 	cy: function(d) {
-		// 		var y = project(d, getStartLL).y;
-		// 		return y;
-		// 	}
-		// });
+		dots
+			.enter()
+			.append('circle')
+			.classed('dot', true)
+			.attr('cx', d => {
+				console.log('d', d);
+				var x = project(d, getStartLL).x;
+				return x;
+			})
+			.attr('cy', d => {
+				var y = project(d, getStartLL).y;
+				return y;
+			})
+			.attr('r', 0.5)
+			.style({
+				fill: '#0082a3',
+				'fill-opacity': 0.6,
+				stroke: '#004d60',
+				'stroke-width': 1
+			})
+			.transition()
+			.duration(1000)
+			.attr('r', 4);
+
+		// dots
 		// dots
 		// 	.transition()
 		// 	.attr({
@@ -161,10 +162,6 @@ d3.csv('dataSet.csv').then(function(data) {
 		// .delay(1000)
 		// .duration(4000);
 	}
-
-	// d3.select('#buttonIdForExmple').on("click", () => {
-
-	// })
 
 	// re-render our visualization whenever the view changes
 	map.on('viewreset', function() {
