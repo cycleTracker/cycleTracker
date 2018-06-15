@@ -84,13 +84,13 @@ const buildMarker = __webpack_require__(508);
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
 
-const centralParkCoords = [-73.9654, 40.7829]; // NY
+const nycCoords = [-73.9911, 40.7359]; // NY
 
 //Setup mapbox-gl map
 var map = new mapboxgl.Map({
 	container: 'map', // container id
 	style: 'mapbox://styles/mapbox/streets-v10',
-	center: [-73.9654, 40.6879],
+	center: nycCoords,
 	zoom: 11
 });
 map.scrollZoom.disable();
@@ -130,15 +130,19 @@ d3.csv('dataSet.csv').then(function(data) {
 				return y;
 			})
 			.attr('r', 0.5)
-			.style('fill', '#0082a3')
+			.style('fill', '#00a34c')
 			.style('fill-opacity', 0.6)
-			.style('stroke', '#004d60')
+			.style('stroke', '#007c3a')
 			.style('stroke-width', 1)
 			.transition()
 			.duration(1000)
 			.attr('r', 4)
 			.transition()
 			.delay(2000)
+			.style('fill', '#fc2f00')
+			.style('stroke', '#c12300')
+			.style('fill-opacity', 0.6)
+			.duration(1000)
 			.attr('cx', d => {
 				console.log('d', d);
 				var x = project(d, getEndLL).x;
