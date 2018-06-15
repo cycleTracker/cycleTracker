@@ -21,7 +21,7 @@ const centralParkCoords = [-73.9654, 40.7829]; // NY
 var map = new mapboxgl.Map({
 	container: 'map', // container id
 	style: 'mapbox://styles/mapbox/streets-v10',
-	center: [-73.9654, 40.7829],
+	center: [-73.9654, 40.6879],
 	zoom: 11
 });
 map.scrollZoom.disable();
@@ -61,15 +61,24 @@ d3.csv('dataSet.csv').then(function(data) {
 				return y;
 			})
 			.attr('r', 0.5)
-			.style({
-				fill: '#0082a3',
-				'fill-opacity': 0.6,
-				stroke: '#004d60',
-				'stroke-width': 1
-			})
+			.style('fill', '#0082a3')
+			.style('fill-opacity', 0.6)
+			.style('stroke', '#004d60')
+			.style('stroke-width', 1)
 			.transition()
 			.duration(1000)
-			.attr('r', 4);
+			.attr('r', 4)
+			.transition()
+			.delay(2000)
+			.attr('cx', d => {
+				console.log('d', d);
+				var x = project(d, getEndLL).x;
+				return x;
+			})
+			.attr('cy', d => {
+				var y = project(d, getEndLL).y;
+				return y;
+			});
 
 		// dots
 		// dots
