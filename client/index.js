@@ -1,7 +1,8 @@
 const mapboxgl = require('mapbox-gl');
 const d3 = require('d3');
-const data = require('../dataset/data.js');
+const data  = require('../dataset/data.js');
 
+console.log('Hiiiiiii', data[0])
 // const api = require('./api');
 const buildMarker = require('./marker.js');
 
@@ -25,11 +26,12 @@ const map = new mapboxgl.Map({
 	style: 'mapbox://styles/mapbox/streets-v10' // mapbox has lots of different map styles available.
 });
 
+
 // Create the marker
-// const marker = buildMarker(category, attraction.place.location);
+const marker = buildMarker(null, centralParkCoords);
 
 //ADD TO DOM
-// marker.addTo(map);
+marker.addTo(map);
 
 // Animate the map
 // map.flyTo({ center: attraction.place.location, zoom: 15 });

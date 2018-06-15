@@ -12,21 +12,19 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "webpack": "^3.6.0",
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.17.5",
+    "webpack": "^3.6.0"
   },
   "dependencies": {
     "bluebird": "^2.10.2",
     "body-parser": "^1.13.3",
     "bootstrap": "3.3.5",
-    "csvtojson": "^2.0.3",
     "d3": "^5.4.0",
     "express": "^4.13.3",
     "mapbox-gl": "^0.40.1",
-    "nunjucks": "^2.5.2",
     "pg": "^4.5.5",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.4.0",
+    "sequelize": "^4.37.10",
     "volleyball": "^1.4.1"
   }
 }
