@@ -45,21 +45,10 @@ function timeDataCleanUp(time) {
 }
 
 d3.csv('dataSet.csv').then(function(data) {
-	//console.log(data[0], getLL(data[0]), project(data[0]))
-	var dots = svg.selectAll('circle.dot').data(data);
-
-	dots
-		.enter()
-		.append('circle')
-		.classed('dot', true)
-
-		.each(d => {
-			d.starttime = timeDataCleanUp(d.starttime);
-			d.stoptime = timeDataCleanUp(d.stoptime);
-		});
-
 	let startTime = 0;
 	let simStart = false;
+	let copiedData;
+
 	const startButton = d3.select('#start-button');
 	startButton.on('click', function(data) {
 		// simStart
@@ -75,6 +64,12 @@ d3.csv('dataSet.csv').then(function(data) {
 	pauseButton.on('click', function(data) {
 		pauseRender();
 	});
+
+	const stopButton = d3.select('#stop-button');
+	stopButton.on('click', function(data) {
+		stopRender();
+	});
+
 	let stopInterval;
 	const interval = () => {
 		stopInterval = setInterval(function() {
@@ -84,8 +79,7 @@ d3.csv('dataSet.csv').then(function(data) {
 			console.log('start time', startTime);
 			dots = svg
 				.selectAll('circle.dot')
-				.data(data)
-
+				.data(copiedData)
 				// .exit()
 				// .enter()
 				// .append('circle')
@@ -95,6 +89,15 @@ d3.csv('dataSet.csv').then(function(data) {
 						d.starttime <= startTime % 86400 &&
 						d.starttime >= previousTime % 86400
 					);
+				})
+				.attr('t', function(d) {
+					//lifecycle for each node
+					// radius of start position change = 250ms
+					// delay before trip duration for 250ms
+					// trip duration = (d.tripduration * 10)ms
+					// node disapearing = 250ms
+					//total lifecycle = 750 + trip duration
+					return 750 + d.tripduration * 10;
 				})
 				.attr('cx', function(d) {
 					var x = project(d, getStartLL).x;
@@ -143,10 +146,26 @@ d3.csv('dataSet.csv').then(function(data) {
 				.attr('r', 10)
 				.style('fill-opacity', 0)
 				.style('stroke-width', 0);
-		}, 250);
+		}, 1000);
 	};
 
 	function render() {
+		// console.log('data', data[0]);
+		copiedData = data.map(row => {
+			return Object.assign({}, row);
+		});
+		console.log(copiedData, 'copied data');
+		stopRender();
+		let dots = svg.selectAll('circle.dot').data(copiedData);
+		dots
+			.enter()
+			.append('circle')
+			.classed('dot', true)
+
+			.each(d => {
+				d.starttime = timeDataCleanUp(d.starttime);
+				d.stoptime = timeDataCleanUp(d.stoptime);
+			});
 		//calls set interval to populate dom based on time bikes/nodes are riding.
 		interval();
 	}
@@ -154,6 +173,16 @@ d3.csv('dataSet.csv').then(function(data) {
 		const currentNodes = svg.selectAll('circle.dot');
 		currentNodes.transition().duration(0);
 		clearInterval(stopInterval);
+	}
+
+	function stopRender() {
+		//do stuff to resume render
+		const currentNodes = svg.selectAll('circle.dot');
+		currentNodes.remove();
+		clearInterval(stopInterval);
+		startTime = 0;
+		simStart = false;
+		// currentNodes.trans
 	}
 	// re-render our visualization whenever the view changes
 	// map.on('viewreset', function() {

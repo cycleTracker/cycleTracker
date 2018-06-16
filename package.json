@@ -26,6 +26,7 @@
     "pg": "^4.5.5",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.37.10",
+    "timetravel": "^0.1.1",
     "volleyball": "^1.4.1"
   }
 }
