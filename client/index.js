@@ -12,19 +12,9 @@ const buildMarker = require('./marker.js');
   * Instantiate the Map
   */
 
-//  const startTimeArray = d.starttime.split(' ')[1].split(':');
-//  const hour = Number(startTimeArray[0] * 3600);
-//  const minutes = Number(startTimeArray[1] * 60);
-//  const seconds = Number(startTimeArray[2]);
-//  const startTimeTotalSeconds = hour + minutes + seconds;
-//  console.log('excel', startTimeTotalSeconds);
 
-//  const stopTimeArray = d.stoptime.split(' ')[1].split(':');
-//  const hour = Number(startTimeArray[0] * 3600);
-//  const minutes = Number(startTimeArray[1] * 60);
-//  const seconds = Number(startTimeArray[2]);
-//  const stopTimeTotalSeconds = hour + minutes + seconds;
-//  console.log('excel', stopTimeTotalSeconds);
+
+
 
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
@@ -56,6 +46,15 @@ function getEndLL(d) {
 	return new mapboxgl.LngLat(+d.endStationLongitude, +d.endStationLatitude);
 }
 
+function timeDataCleanUp (time) {
+	const timeArray = time.split(' ')[1].split(':');
+	const hour = Number(timeArray[0] * 3600);
+	const minutes = Number(timeArray[1] * 60);
+	const seconds = Number(timeArray[2]);
+	const timeTotalSeconds = hour + minutes + seconds;
+	return timeTotalSeconds
+}
+
 d3.csv('dataSet.csv').then(function(data) {
 	//console.log(data[0], getLL(data[0]), project(data[0]))
 	var dots = svg.selectAll('circle.dot').data(data);
@@ -63,40 +62,67 @@ d3.csv('dataSet.csv').then(function(data) {
 		.enter()
 		.append('circle')
 		.classed('dot', true)
-		.attr('r', 0.5)
-		.attr('cx', d => {
-			var x = project(d, getStartLL).x;
-			return x;
+		.attr('r', 0)
+		.each((d)=> {
+			d.starttime = timeDataCleanUp(d.starttime);
+			d.stoptime = timeDataCleanUp(d.stoptime);
 		})
-		.attr('cy', d => {
-			var y = project(d, getStartLL).y;
-			return y;
+
+		
+
+	let startTime = 0;
+	
+	setInterval( () => {
+		let previousTime = startTime;
+		startTime += 900;
+		// console.log('hello', dots) 
+		console.log(startTime)
+		dots
+		.enter()
+		.filter((d) => {
+			
+			return d.starttime <= startTime && d.starttime >= previousTime
 		})
-		.style('fill', '#00a34c')
-		.style('fill-opacity', 0.6)
-		.style('stroke', '#007c3a')
-		.style('stroke-width', 1)
-		.transition()
-		.duration(1000)
-		.attr('r', 4)
-		.transition()
-		.delay(1000)
-		.style('fill', '#fc2f00')
-		.style('stroke', '#c12300')
-		.style('fill-opacity', 0.6)
-		.attr('cx', d => {
-			var x = project(d, getEndLL).x;
-			return x;
+		.each((d) => {
+			console.log(d)
 		})
-		.attr('cy', d => {
-			var y = project(d, getEndLL).y;
-			return y;
-		})
-		.duration(d => {
-			//this would be the correct ratio for 900 seconds per real time second;
-			// return d.tripduration / 900;
-			return d.tripduration * 10;
-		});
+		// 	if (d.starttime <= startTime && d.startTime >= previousTime) {
+		// 		return dots.attr('cx', d => {
+		// 			var x = project(d, getStartLL).x;
+		// 			return x;
+		// 		})
+		// 		.attr('cy', d => {
+		// 			var y = project(d, getStartLL).y;
+		// 			return y;
+		// 		})
+		// 		.style('fill', '#00a34c')
+		// 		.style('fill-opacity', 0.6)
+		// 		.style('stroke', '#007c3a')
+		// 		.style('stroke-width', 1)
+		// 		.transition()
+		// 		.duration(1000)
+		// 		.attr('r', 4)
+		// 		.transition()
+		// 		.delay(1000)
+		// 		.style('fill', '#fc2f00')
+		// 		.style('stroke', '#c12300')
+		// 		.style('fill-opacity', 0.6)
+		// 		.attr('cx', d => {
+		// 			var x = project(d, getEndLL).x;
+		// 			return x;
+		// 		})
+		// 		.attr('cy', d => {
+		// 			var y = project(d, getEndLL).y;
+		// 			return y;
+		// 		})
+		// 		.duration(d => {
+		// 			//this would be the correct ratio for 900 seconds per real time second;
+		// 			// return d.tripduration / 900;
+		// 			return d.tripduration * 10;
+		// 		});
+		// 	}
+		// })
+	}, 1000)
 
 	function render() {}
 
