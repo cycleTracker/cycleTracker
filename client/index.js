@@ -22,10 +22,11 @@ var map = new mapboxgl.Map({
   container: "map", // container id
   style: "mapbox://styles/mapbox/streets-v10",
   center: nycCoords,
-  zoom: 11
+  zoom: 11,
+  interactive: false
 });
 map.scrollZoom.disable();
-map.addControl(new mapboxgl.NavigationControl());
+// map.addControl(new mapboxgl.NavigationControl());
 
 // Setup our svg layer that we can manipulate with d3
 var container = map.getCanvasContainer();
@@ -54,11 +55,12 @@ function timeDataCleanUp(time) {
 d3.csv("dataSet.csv").then(function(data) {
   //console.log(data[0], getLL(data[0]), project(data[0]))
   var dots = svg.selectAll("circle.dot").data(data);
+
   dots
     .enter()
     .append("circle")
     .classed("dot", true)
-    .attr("r", 0)
+    .attr("r", 1)
     .each(d => {
       d.starttime = timeDataCleanUp(d.starttime);
       d.stoptime = timeDataCleanUp(d.stoptime);
@@ -66,52 +68,56 @@ d3.csv("dataSet.csv").then(function(data) {
 
   let startTime = 0;
 
-  setInterval(() => {
+  setInterval(function() {
     let previousTime = startTime;
     startTime += 900;
-    // console.log('hello', dots)
     console.log(startTime);
     dots
       .enter()
-      .filter(d => {
+      .append("circle")
+      .classed("dot", true)
+      .filter(function(d) {
         return (
           d.starttime <= startTime % 86400 &&
           d.starttime >= previousTime % 86400
         );
       })
-      .attr("cx", d => {
+
+      .attr("cx", function(d) {
         var x = project(d, getStartLL).x;
         return x;
       })
       .attr("cy", d => {
+        console.log(2);
         var y = project(d, getStartLL).y;
+
         return y;
       })
-    //   .style("fill", "#00a34c")
-    //   .style("fill-opacity", 0.6)
-    //   .style("stroke", "#007c3a")
-    //   .style("stroke-width", 1)
-    //   .transition()
-    //   .duration(1000)
-    //   .attr("r", 4)
-    //   .transition()
-    //   .delay(1000)
-    //   .style("fill", "#fc2f00")
-    //   .style("stroke", "#c12300")
-    //   .style("fill-opacity", 0.6)
-    //   .attr("cx", d => {
-    //     var x = project(d, getEndLL).x;
-    //     return x;
-    //   })
-    //   .attr("cy", d => {
-    //     var y = project(d, getEndLL).y;
-    //     return y;
-    //   })
-    //   .duration(d => {
-    //     //this would be the correct ratio for 900 seconds per real time second;
-    //     // return d.tripduration / 900;
-    //     return d.tripduration * 10;
-    //   });
+      .style("fill", "#00a34c")
+      .style("fill-opacity", 0.6)
+      .style("stroke", "#007c3a")
+      .style("stroke-width", 1)
+      .transition()
+      .duration(0)
+      .attr("r", 4)
+      .transition()
+      .delay(500)
+      .style("fill", "#fc2f00")
+      .style("stroke", "#c12300")
+      .style("fill-opacity", 0.6)
+      .attr("cx", d => {
+        var x = project(d, getEndLL).x;
+        return x;
+      })
+      .attr("cy", d => {
+        var y = project(d, getEndLL).y;
+        return y;
+      })
+      .duration(d => {
+        //this would be the correct ratio for 900 seconds per real time second;
+        // return d.tripduration / 900;
+        return d.tripduration * 10;
+      });
   }, 1000);
 
   function render() {}
