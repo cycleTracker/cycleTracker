@@ -52,87 +52,105 @@ function timeDataCleanUp(time) {
   return timeTotalSeconds;
 }
 
-d3.csv("dataSet.csv").then(function(data) {
-  //console.log(data[0], getLL(data[0]), project(data[0]))
-  var dots = svg.selectAll("circle.dot").data(data);
+const startButton = document.getElementById("start-button");
 
-  dots
-    .enter()
-    .append("circle")
-    .classed("dot", true)
-    .attr("r", 1)
-    .each(d => {
-      d.starttime = timeDataCleanUp(d.starttime);
-      d.stoptime = timeDataCleanUp(d.stoptime);
-    });
 
-  let startTime = 0;
+  d3.csv("dataSet.csv").then(function(data) {
+    //console.log(data[0], getLL(data[0]), project(data[0]))
+    var dots = svg.selectAll("circle.dot").data(data);
 
-  setInterval(function() {
-    let previousTime = startTime;
-    startTime += 900;
-    console.log(startTime);
     dots
       .enter()
       .append("circle")
       .classed("dot", true)
-      .filter(function(d) {
-        return (
-          d.starttime <= startTime % 86400 &&
-          d.starttime >= previousTime % 86400
-        );
-      })
 
-      .attr("cx", function(d) {
-        var x = project(d, getStartLL).x;
-        return x;
-      })
-      .attr("cy", d => {
-        console.log(2);
-        var y = project(d, getStartLL).y;
-
-        return y;
-      })
-      .style("fill", "#00a34c")
-      .style("fill-opacity", 0.6)
-      .style("stroke", "#007c3a")
-      .style("stroke-width", 1)
-      .transition()
-      .duration(0)
-      .attr("r", 4)
-      .transition()
-      .delay(500)
-      .style("fill", "#fc2f00")
-      .style("stroke", "#c12300")
-      .style("fill-opacity", 0.6)
-      .attr("cx", d => {
-        var x = project(d, getEndLL).x;
-        return x;
-      })
-      .attr("cy", d => {
-        var y = project(d, getEndLL).y;
-        return y;
-      })
-      .duration(d => {
-        //this would be the correct ratio for 900 seconds per real time second;
-        // return d.tripduration / 900;
-        return d.tripduration * 10;
+      .each(d => {
+        d.starttime = timeDataCleanUp(d.starttime);
+        d.stoptime = timeDataCleanUp(d.stoptime);
       });
-  }, 1000);
 
-  function render() {}
+    let startTime = 0;
 
-  // re-render our visualization whenever the view changes
-  map.on("viewreset", function() {
+    setInterval(function() {
+      let previousTime = startTime;
+      startTime += 900;
+      console.log(startTime);
+      dots
+        .enter()
+        .append("circle")
+        .classed("dot", true)
+        .filter(function(d) {
+          return (
+            d.starttime <= startTime % 86400 &&
+            d.starttime >= previousTime % 86400
+          );
+        })
+
+        .attr("cx", function(d) {
+          var x = project(d, getStartLL).x;
+          return x;
+        })
+        .attr("cy", d => {
+          console.log(2);
+          var y = project(d, getStartLL).y;
+
+          return y;
+        })
+        .style("fill", "#00a34c")
+        .style("fill-opacity", 0.4)
+        .style("stroke", "#007c3a")
+        .style("stroke-width", 1)
+        .attr("r", 7)
+        .transition()
+        .duration(250)
+        .attr("r", 4)
+
+        .transition()
+        .delay(250)
+        .style("fill", "#DDB800")
+        .style("stroke", "#D1AE00")
+        .style("fill-opacity", 0.6)
+        .transition()
+        .attr("cx", d => {
+          var x = project(d, getEndLL).x;
+          return x;
+        })
+        .attr("cy", d => {
+          var y = project(d, getEndLL).y;
+          return y;
+        })
+        .duration(d => {
+          //this would be the correct ratio for 900 seconds per real time second;
+          // return d.tripduration / 900;
+          return d.tripduration * 10;
+        })
+        .transition()
+        .duration(0)
+        .style("fill", "#fc2f00")
+        .style("stroke", "#c12300")
+        .style("fill-opacity", 0.4)
+
+        .transition()
+        .duration(250)
+        .attr("r", 10)
+        .style("fill-opacity", 0)
+        .style("stroke-width", 0);
+    }, 1000);
+
+    function render() {}
+
+    // re-render our visualization whenever the view changes
+    map.on("viewreset", function() {
+      render();
+    });
+    map.on("move", function() {
+      render();
+    });
+
+    // render our initial visualization
     render();
   });
-  map.on("move", function() {
-    render();
-  });
 
-  // render our initial visualization
-  render();
-});
 
 // Create the marker
 // const marker = buildMarker(null, centralParkCoords);
