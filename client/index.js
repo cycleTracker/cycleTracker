@@ -12,6 +12,20 @@ const buildMarker = require('./marker.js');
   * Instantiate the Map
   */
 
+//  const startTimeArray = d.starttime.split(' ')[1].split(':');
+//  const hour = Number(startTimeArray[0] * 3600);
+//  const minutes = Number(startTimeArray[1] * 60);
+//  const seconds = Number(startTimeArray[2]);
+//  const startTimeTotalSeconds = hour + minutes + seconds;
+//  console.log('excel', startTimeTotalSeconds);
+
+//  const stopTimeArray = d.stoptime.split(' ')[1].split(':');
+//  const hour = Number(startTimeArray[0] * 3600);
+//  const minutes = Number(startTimeArray[1] * 60);
+//  const seconds = Number(startTimeArray[2]);
+//  const stopTimeTotalSeconds = hour + minutes + seconds;
+//  console.log('excel', stopTimeTotalSeconds);
+
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
 
@@ -51,12 +65,6 @@ d3.csv('dataSet.csv').then(function(data) {
 		.classed('dot', true)
 		.attr('r', 0.5)
 		.attr('cx', d => {
-			const startTimeArray = d.starttime.split(' ')[1].split(':');
-			const hour = Number(startTimeArray[0] * 3600);
-			const minutes = Number(startTimeArray[1] * 60);
-			const seconds = Number(startTimeArray[2]);
-			const startTimeTotalSeconds = hour + minutes + seconds;
-			console.log('excel', startTimeTotalSeconds);
 			var x = project(d, getStartLL).x;
 			return x;
 		})
@@ -85,6 +93,8 @@ d3.csv('dataSet.csv').then(function(data) {
 			return y;
 		})
 		.duration(d => {
+			//this would be the correct ratio for 900 seconds per real time second;
+			// return d.tripduration / 900;
 			return d.tripduration * 10;
 		});
 
