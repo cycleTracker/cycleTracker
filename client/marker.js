@@ -1,21 +1,13 @@
-const { Marker } = require("mapbox-gl");
-
-const iconURLs = {
-  hotels: "http://i.imgur.com/D9574Cu.png",
-  restaurants: "http://i.imgur.com/cqR6pUI.png",
-  activities: "http://i.imgur.com/WbMOfMl.png"
-};
+const { Marker } = require('mapbox-gl');
 
 const buildMarker = (type, coords) => {
-  if (!iconURLs.hasOwnProperty(type)) {
-    type = "activities";
-  }
-  const markerEl = document.createElement("div");
-  markerEl.style.backgroundSize = "contain";
-  markerEl.style.width = "32px";
-  markerEl.style.height = "37px";
-  markerEl.style.backgroundImage = `url(${iconURLs[type]})`;
-  return new Marker(markerEl).setLngLat(coords);
+	const markerEl = document.createElement('div');
+	markerEl.style.backgroundSize = 'contain';
+	markerEl.style.width = '32px';
+	markerEl.style.height = '32px';
+	// markerEl.style.markerColor = 'red';
+	markerEl.style.backgroundImage = `url(http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/map-marker-icon.png)`;
+	return new Marker(markerEl).setLngLat(coords);
 };
 
 module.exports = buildMarker;

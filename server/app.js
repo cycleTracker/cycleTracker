@@ -7,14 +7,15 @@ const app = express();
 
 // logging and body-parsing
 app.use(volleyball);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// serve dynamic routes
-app.use('/api', require('./routes'));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
 
 // static file-serving middleware
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// app.get('/dataSet', (req, res, next) => {
+// 	res.send(dataSet)
+// })
 
 // failed to catch req above means 404, forward to error handler
 app.use(function(req, res, next) {
