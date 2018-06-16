@@ -10076,10 +10076,12 @@ d3.csv('dataSet.csv').then(function(data) {
 	});
 
 	const pauseButton = d3.select('#pause-button');
-	pauseButton.on('click', function(data) {});
-
-	const interval = () =>
-		setInterval(function() {
+	pauseButton.on('click', function(data) {
+		pauseRender();
+	});
+	let stopInterval;
+	const interval = () => {
+		stopInterval = setInterval(function() {
 			let previousTime;
 			previousTime = startTime;
 			startTime += 900;
@@ -10146,10 +10148,16 @@ d3.csv('dataSet.csv').then(function(data) {
 				.style('fill-opacity', 0)
 				.style('stroke-width', 0);
 		}, 250);
+	};
 
 	function render() {
 		//calls set interval to populate dom based on time bikes/nodes are riding.
 		interval();
+	}
+	function pauseRender() {
+		const currentNodes = svg.selectAll('circle.dot');
+		currentNodes.transition().duration(0);
+		clearInterval(stopInterval);
 	}
 	// re-render our visualization whenever the view changes
 	// map.on('viewreset', function() {
