@@ -24,17 +24,33 @@ const filterState = {
 	gender: false
 };
 
+//gender 1 === male
+// gender 2 === female
+// gender 0 === unknown
+
 function setColor(d) {
 	if (filterState.gender) {
 		if (d.gender === '1') {
-			return '#ec7d10';
+			return {
+				fill: '#5c0c68',
+				stroke: '#45094f'
+			};
 		} else if (d.gender === '2') {
-			return '#57737a';
+			return {
+				fill: '#4ab0c9',
+				stroke: '#3e93a8'
+			};
 		} else {
-			return '#757471';
+			return {
+				fill: '#757471',
+				stroke: '#565554'
+			};
 		}
 	}
-	return '#DDB800';
+	return {
+		fill: '#D8c320',
+		stroke: '#b7a51b'
+	};
 }
 
 const genderToggle = d3.select('#gender');
@@ -128,10 +144,10 @@ d3.csv('dataSet.csv').then(function(data) {
 
 					return y;
 				})
-				.style('fill', '#00a34c')
-				.style('fill-opacity', 0.4)
-				.style('stroke', '#007c3a')
-				.style('stroke-width', 1)
+				.style('fill', '#007c3a')
+				.style('fill-opacity', 0.6)
+				.style('stroke', '#00632e')
+				.style('stroke-width', 2)
 				.attr('r', 7)
 				.transition()
 				.duration(250)
@@ -140,10 +156,12 @@ d3.csv('dataSet.csv').then(function(data) {
 				.delay(250)
 				//ttest
 				.style('fill', function(d) {
-					return setColor(d);
+					return setColor(d).fill;
 				})
 
-				.style('stroke', null)
+				.style('stroke', function(d) {
+					return setColor(d).stroke;
+				})
 				.style('fill-opacity', 0.7)
 				.transition()
 				.attr('cx', d => {
@@ -161,9 +179,9 @@ d3.csv('dataSet.csv').then(function(data) {
 				})
 				.transition()
 				.duration(0)
-				.style('fill', '#fc2f00')
-				.style('stroke', '#c12300')
-				.style('fill-opacity', 0.4)
+				.style('fill', '#cc0000')
+				.style('stroke', '#ad0000')
+				.style('fill-opacity', 0.6)
 
 				.transition()
 				.duration(250)
