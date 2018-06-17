@@ -9564,7 +9564,8 @@ const state = {
 	gender: false,
 	simulationSpeed: 1,
 	mostPopularBike: '25697',
-	mostPopularBikeToggle: false
+	mostPopularBikeToggle: false,
+	age: false
 };
 
 //gender 1 === male
@@ -9612,13 +9613,25 @@ function filterNodes(node, startTime, previousTime) {
 
 const genderToggle = d3.select('#gender');
 genderToggle.on('click', () => {
-	state.gender = !state.gender;
+	state.gender = true;
+	state.age = false;
+	state.mostPopularBikeToggle = false;
 });
 
 const popularToggle = d3.select('#popular');
 popularToggle.on('click', () => {
-	state.mostPopularBikeToggle = !state.mostPopularBikeToggle;
+	state.mostPopularBikeToggle = true;
+	state.gender = false;
+	state.age = false;
 });
+
+const ageToggle = d3.select('#age');
+ageToggle.on('click', () => {
+	state.age = true;
+	state.mostPopularBikeToggle = false;
+	state.gender = false;
+});
+
 const slider = d3.select('#slider');
 slider.on('change', () => {
 	if (d3.event.target.value === '2') {
