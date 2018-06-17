@@ -1,6 +1,6 @@
 const mapboxgl = require('mapbox-gl');
 const d3 = require('d3');
-const noUiSlider = require('nouislider');
+
 /*
   * Instantiate the Map
   */
@@ -93,6 +93,8 @@ slider.on('change', () => {
 	console.log('sim speed', state.simulationSpeed);
 });
 
+const clock = d3.select('#clock');
+
 // Setup our svg layer that we can manipulate with d3
 var container = map.getCanvasContainer();
 var svg = d3.select(container).append('svg');
@@ -146,13 +148,16 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 		stopInterval = setInterval(function() {
 			let previousTime;
 			previousTime = startTime;
-			// startTime += 900;
 			startTime += 225;
+			clock.text(new Date(startTime * 1000).toISOString().substr(11, 8));
 			if (startTime === 86400) {
 				clearInterval(stopInterval);
 				stopRender();
 			}
-			console.log('start time', startTime);
+			console.log(
+				'start time',
+				new Date(startTime * 1000).toISOString().substr(11, 8)
+			);
 			let dots = svg
 				.selectAll('circle.dot')
 				.data(copiedData)
@@ -250,7 +255,6 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 			frequencyObj[node.bikeid] = frequencyObj[node.bikeid] + 1 || 1;
 		});
 		console.log('freqobj', getMostPopularBike(frequencyObj));
-
 		stopRender();
 		let dots = svg.selectAll('circle.dot').data(copiedData);
 		dots
