@@ -5,6 +5,8 @@ const d3 = require('d3');
   * Instantiate the Map
   */
 
+//  MOST POPULAR BIKEID ["25697", 34]
+
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
 
@@ -15,13 +17,16 @@ var map = new mapboxgl.Map({
 	container: 'map', // container id
 	style: 'mapbox://styles/mapbox/streets-v10',
 	center: nycCoords,
-	zoom: 11,
+	zoom: 11.5,
 	interactive: false
 });
 map.scrollZoom.disable();
 
-const filterState = {
-	gender: false
+const state = {
+	gender: false,
+	simulationSpeed: 1,
+	mostPopularBike: '25697',
+	mostPopularBikeToggle: false
 };
 
 //gender 1 === male
@@ -29,7 +34,7 @@ const filterState = {
 // gender 0 === unknown
 
 function setColor(d) {
-	if (filterState.gender) {
+	if (state.gender) {
 		if (d.gender === '1') {
 			return {
 				fill: '#5c0c68',
@@ -54,9 +59,13 @@ function setColor(d) {
 }
 
 const genderToggle = d3.select('#gender');
-console.log('gendertoggle1', genderToggle);
 genderToggle.on('click', () => {
-	filterState.gender = !filterState.gender;
+	state.gender = !state.gender;
+});
+
+const popularToggle = d3.select('#popular');
+popularToggle.on('click', () => {
+	state.mostPopularBikeToggle = !state.mostPopularBikeToggle;
 });
 
 // Setup our svg layer that we can manipulate with d3
@@ -83,11 +92,12 @@ function timeDataCleanUp(time) {
 	return timeTotalSeconds;
 }
 
-d3.csv('Citibike_Data.csv').then(function(data) {
+d3.csv('citiBike_Data.csv').then(function(data) {
 	let startTime = 0;
 	let simStart = false;
 	let copiedData;
 	console.log('data', data[0]);
+
 	const startButton = d3.select('#start-button');
 	startButton.on('click', function(data) {
 		if (!simStart) {
@@ -111,7 +121,12 @@ d3.csv('Citibike_Data.csv').then(function(data) {
 		stopInterval = setInterval(function() {
 			let previousTime;
 			previousTime = startTime;
-			startTime += 900;
+			// startTime += 900;
+			startTime += 225;
+			if (startTime === 86400) {
+				clearInterval(stopInterval);
+				stopRender();
+			}
 			console.log('start time', startTime);
 			dots = svg
 				.selectAll('circle.dot')
@@ -124,17 +139,19 @@ d3.csv('Citibike_Data.csv').then(function(data) {
 					return (
 						d.starttime <= startTime % 86400 &&
 						d.starttime >= previousTime % 86400
+						// &&
+						// d.bikeid === state.mostPopularBike
 					);
 				})
-				.attr('t', function(d) {
-					//lifecycle for each node
-					// radius of start position change = 250ms
-					// delay before trip duration for 250ms
-					// trip duration = (d.tripduration * 10)ms
-					// node disapearing = 250ms
-					//total lifecycle = 750 + trip duration
-					return 750 + d.tripduration * 10;
-				})
+				// .attr('t', function(d) {
+				// 	//lifecycle for each node
+				// 	// radius of start position change = 250ms
+				// 	// delay before trip duration for 250ms
+				// 	// trip duration = (d.tripduration * 10)ms
+				// 	// node disapearing = 250ms
+				// 	//total lifecycle = 750 + trip duration
+				// 	return 750 + d.tripduration * 10;
+				// })
 				.attr('cx', function(d) {
 					var x = project(d, getStartLL).x;
 					return x;
@@ -144,17 +161,14 @@ d3.csv('Citibike_Data.csv').then(function(data) {
 
 					return y;
 				})
-				.style('fill', '#007c3a')
-				.style('fill-opacity', 0.6)
-				.style('stroke', '#00632e')
-				.style('stroke-width', 2)
-				.attr('r', 7)
-				.transition()
-				.duration(250)
-				.attr('r', 4)
-				.transition()
-				.delay(250)
-				//ttest
+				// .style('fill', '#007c3a')
+				// .style('fill-opacity', 0.4)
+				// .style('stroke', '#00632e')
+				// .style('stroke-width', 2)
+				// .attr('r', 6)
+				// .transition()
+				// .duration(250 / state.simulationSpeed)
+				.attr('r', 3)
 				.style('fill', function(d) {
 					return setColor(d).fill;
 				})
@@ -162,8 +176,12 @@ d3.csv('Citibike_Data.csv').then(function(data) {
 				.style('stroke', function(d) {
 					return setColor(d).stroke;
 				})
-				.style('fill-opacity', 0.7)
+				.style('stroke-width', 2)
+				.style('fill-opacity', 0.4)
 				.transition()
+				.delay(250 / state.simulationSpeed)
+				//ttest
+				// .transition()
 				.attr('cx', d => {
 					var x = project(d, getEndLL).x;
 					return x;
@@ -174,38 +192,48 @@ d3.csv('Citibike_Data.csv').then(function(data) {
 				})
 				.duration(function(d) {
 					//this would be the correct ratio for 900 seconds per real time second;
-					// return d.tripduration / 900;
-					return d.tripduration * 10;
+					// return d.tripduration / 900 / state.simulationSpeed;
+					return d.tripduration / 4 / state.simulationSpeed;
 				})
-				.transition()
-				.duration(0)
-				.style('fill', '#cc0000')
-				.style('stroke', '#ad0000')
-				.style('fill-opacity', 0.6)
-
-				.transition()
-				.duration(250)
-				.attr('r', 10)
-				.style('fill-opacity', 0)
-				.style('stroke-width', 0);
-		}, 1000);
+				// .transition()
+				// .duration(0)
+				// .style('fill', '#cc0000')
+				// .style('stroke', '#ad0000')
+				// .style('fill-opacity', 0.4)
+				// .transition()
+				// .duration(100 / state.simulationSpeed)
+				// .attr('r', 9)
+				// .style('fill-opacity', 0)
+				// .style('stroke-width', 0)
+				.remove();
+		}, 250 / state.simulationSpeed);
 	};
 
 	function render() {
 		copiedData = data.map(row => {
 			return Object.assign({}, row);
 		});
+
+		copiedData.forEach(node => {
+			node.starttime = timeDataCleanUp(node.starttime);
+			node.stoptime = timeDataCleanUp(node.stoptime);
+		});
+		const frequencyObj = {};
+		copiedData.forEach(node => {
+			frequencyObj[node.bikeid] = frequencyObj[node.bikeid] + 1 || 1;
+		});
+		console.log('freqobj', getMostPopularBike(frequencyObj));
+
 		stopRender();
 		let dots = svg.selectAll('circle.dot').data(copiedData);
 		dots
 			.enter()
 			.append('circle')
-			.classed('dot', true)
-
-			.each(d => {
-				d.starttime = timeDataCleanUp(d.starttime);
-				d.stoptime = timeDataCleanUp(d.stoptime);
-			});
+			.classed('dot', true);
+		// 	.each(d => {
+		// 		d.starttime = timeDataCleanUp(d.starttime);
+		// 		d.stoptime = timeDataCleanUp(d.stoptime);
+		// 	});
 		//calls set interval to populate dom based on time bikes/nodes are riding.
 		interval();
 	}
@@ -235,3 +263,11 @@ d3.csv('Citibike_Data.csv').then(function(data) {
 	// render our initial visualization
 	// render();
 });
+
+function getMostPopularBike(frequencyObj) {
+	let freqArr = Object.entries(frequencyObj);
+	freqArr = freqArr.sort((a, b) => {
+		return b[1] - a[1];
+	});
+	return freqArr[0];
+}
