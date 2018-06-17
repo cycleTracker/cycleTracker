@@ -10087,11 +10087,11 @@ function timeDataCleanUp(time) {
 	return timeTotalSeconds;
 }
 
-d3.csv('bigDataSet.csv').then(function(data) {
+d3.csv('Citibike_Data.csv').then(function(data) {
 	let startTime = 0;
 	let simStart = false;
 	let copiedData;
-
+	console.log('data', data[0]);
 	const startButton = d3.select('#start-button');
 	startButton.on('click', function(data) {
 		if (!simStart) {
