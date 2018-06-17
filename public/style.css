@@ -71,10 +71,22 @@ h1 {
 	flex-direction: row;
 	align-items: baseline;
 	justify-content: space-between;
+	font-size: 1.5rem;
 }
 .legend-dots {
 	height: 30px;
 	width: 30px;
 	border-radius: 50%;
 	margin: 1rem;
+}
+
+#parent-slider {
+	padding: 0 1rem;
+	margin: 0;
+}
+#speeds {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 0 1rem;
 }

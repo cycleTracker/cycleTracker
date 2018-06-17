@@ -10,7 +10,7 @@ const d3 = require('d3');
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
 
-const nycCoords = [-73.9911, 40.7359]; // NY
+const nycCoords = [-73.951, 40.7385]; // NY
 
 //Setup mapbox-gl map
 var map = new mapboxgl.Map({
@@ -18,7 +18,8 @@ var map = new mapboxgl.Map({
 	style: 'mapbox://styles/mapbox/streets-v10',
 	center: nycCoords,
 	zoom: 11.5,
-	interactive: false
+	interactive: false,
+	pitch: 0
 });
 map.scrollZoom.disable();
 
@@ -156,7 +157,7 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 			}
 			console.log(
 				'start time',
-				new Date(startTime * 1000).toISOString().substr(11, 8)
+				new Date((startTime * 1000) % 43200).toISOString().substr(11, 8)
 			);
 			let dots = svg
 				.selectAll('circle.dot')
