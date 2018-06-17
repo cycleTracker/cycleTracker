@@ -38,18 +38,18 @@ function setColor(d) {
 	if (state.gender) {
 		if (d.gender === '1') {
 			return {
-				fill: '#5c0c68',
-				stroke: '#45094f'
+				fill: '#cc0000',
+				stroke: '#ad0000'
 			};
 		} else if (d.gender === '2') {
 			return {
-				fill: '#4ab0c9',
-				stroke: '#3e93a8'
+				fill: '#0479a0',
+				stroke: '#035e7c'
 			};
 		} else {
 			return {
-				fill: '#757471',
-				stroke: '#565554'
+				fill: 'black',
+				stroke: 'black'
 			};
 		}
 	}
@@ -282,6 +282,7 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 		clearInterval(stopInterval);
 		startTime = 0;
 		simStart = false;
+		clock.text('00:00:00');
 	}
 });
 
