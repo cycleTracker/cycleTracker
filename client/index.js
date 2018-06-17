@@ -20,6 +20,29 @@ var map = new mapboxgl.Map({
 });
 map.scrollZoom.disable();
 
+const filterState = {
+	gender: false
+};
+
+function setColor(d) {
+	if (filterState.gender) {
+		if (d.gender === '1') {
+			return '#ec7d10';
+		} else if (d.gender === '2') {
+			return '#57737a';
+		} else {
+			return '#757471';
+		}
+	}
+	return '#DDB800';
+}
+
+const genderToggle = d3.select('#gender');
+console.log('gendertoggle1', genderToggle);
+genderToggle.on('click', () => {
+	filterState.gender = !filterState.gender;
+});
+
 // Setup our svg layer that we can manipulate with d3
 var container = map.getCanvasContainer();
 var svg = d3.select(container).append('svg');
@@ -51,9 +74,6 @@ d3.csv('dataSet.csv').then(function(data) {
 
 	const startButton = d3.select('#start-button');
 	startButton.on('click', function(data) {
-		// simStart
-		// 	? d3.select(this).text('Start Simulation')
-		// 	: d3.select(this).text('Pause Simulation');
 		if (!simStart) {
 			render();
 		}
@@ -118,9 +138,13 @@ d3.csv('dataSet.csv').then(function(data) {
 				.attr('r', 4)
 				.transition()
 				.delay(250)
-				.style('fill', '#DDB800')
-				.style('stroke', '#D1AE00')
-				.style('fill-opacity', 0.6)
+				//ttest
+				.style('fill', function(d) {
+					return setColor(d);
+				})
+
+				.style('stroke', null)
+				.style('fill-opacity', 0.7)
 				.transition()
 				.attr('cx', d => {
 					var x = project(d, getEndLL).x;
@@ -150,11 +174,9 @@ d3.csv('dataSet.csv').then(function(data) {
 	};
 
 	function render() {
-		// console.log('data', data[0]);
 		copiedData = data.map(row => {
 			return Object.assign({}, row);
 		});
-		console.log(copiedData, 'copied data');
 		stopRender();
 		let dots = svg.selectAll('circle.dot').data(copiedData);
 		dots
