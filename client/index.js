@@ -83,7 +83,7 @@ function timeDataCleanUp(time) {
 	return timeTotalSeconds;
 }
 
-d3.csv('dataSet.csv').then(function(data) {
+d3.csv('bigDataSet.csv').then(function(data) {
 	let startTime = 0;
 	let simStart = false;
 	let copiedData;
