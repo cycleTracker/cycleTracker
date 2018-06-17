@@ -7,11 +7,18 @@
   <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
   <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet' />
   <link rel="stylesheet" href="./style.css"></link>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
 </head>
 
 <body>
   <header>
     <h1>cycleTracker</h1>
+    <form action="#">
+      <p class="range-field">
+        <input type="range" id="slider" min="1" max="3" value="2" />
+      </p>
+    </form>
   </header>
   <div id="app">
     <aside>
@@ -19,12 +26,21 @@
       <button id="start-button">Start simulation</button>
       <button id="pause-button">Pause simulation</button>
       <button id="stop-button">Stop simulation</button>
-      <label>filter by gender
-        <input id="gender" type="checkbox" />
-      </label>
-      <label>Most popular bike
-        <input id="popular" type="checkbox" />
-      </label>
+      <form action="#">
+        <p>
+          <label>
+            <input id="gender" type="checkbox" />
+            <span>Filter by gender</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input id="popular" type="checkbox" />
+            <span>Most popular bike</span>
+          </label>
+        </p>
+      </form>
+
       <p id="clock">Clock zone: </p>
     </aside>
     <div id="map">

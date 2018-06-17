@@ -1,6 +1,6 @@
 const mapboxgl = require('mapbox-gl');
 const d3 = require('d3');
-
+const noUiSlider = require('nouislider');
 /*
   * Instantiate the Map
   */
@@ -58,6 +58,20 @@ function setColor(d) {
 	};
 }
 
+function filterNodes(node, startTime, previousTime) {
+	if (
+		node.starttime <= startTime % 86400 &&
+		node.starttime >= previousTime % 86400
+	) {
+		if (state.mostPopularBikeToggle) {
+			return node.bikeid === state.mostPopularBike;
+		} else {
+			return true;
+		}
+	}
+	return false;
+}
+
 const genderToggle = d3.select('#gender');
 genderToggle.on('click', () => {
 	state.gender = !state.gender;
@@ -66,6 +80,17 @@ genderToggle.on('click', () => {
 const popularToggle = d3.select('#popular');
 popularToggle.on('click', () => {
 	state.mostPopularBikeToggle = !state.mostPopularBikeToggle;
+});
+const slider = d3.select('#slider');
+slider.on('change', () => {
+	if (d3.event.target.value === '2') {
+		state.simulationSpeed = 1;
+	} else if (d3.event.target.value === '1') {
+		state.simulationSpeed = 0.25;
+	} else if (d3.event.target.value === '3') {
+		state.simulationSpeed = 2;
+	}
+	console.log('sim speed', state.simulationSpeed);
 });
 
 // Setup our svg layer that we can manipulate with d3
@@ -128,7 +153,7 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 				stopRender();
 			}
 			console.log('start time', startTime);
-			dots = svg
+			let dots = svg
 				.selectAll('circle.dot')
 				.data(copiedData)
 				// .exit()
@@ -136,12 +161,7 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 				// .append('circle')
 				// .classed('dot', true)
 				.filter(function(d) {
-					return (
-						d.starttime <= startTime % 86400 &&
-						d.starttime >= previousTime % 86400
-						// &&
-						// d.bikeid === state.mostPopularBike
-					);
+					return filterNodes(d, startTime, previousTime);
 				})
 				// .attr('t', function(d) {
 				// 	//lifecycle for each node
@@ -168,7 +188,9 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 				// .attr('r', 6)
 				// .transition()
 				// .duration(250 / state.simulationSpeed)
-				.attr('r', 3)
+				.attr('r', () => {
+					return state.mostPopularBikeToggle ? 6 : 3;
+				})
 				.style('fill', function(d) {
 					return setColor(d).fill;
 				})
@@ -177,7 +199,9 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 					return setColor(d).stroke;
 				})
 				.style('stroke-width', 2)
-				.style('fill-opacity', 0.4)
+				.style('fill-opacity', () => {
+					return state.mostPopularBikeToggle ? 0.7 : 0.4;
+				})
 				.transition()
 				.delay(250 / state.simulationSpeed)
 				//ttest
@@ -217,6 +241,9 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 		copiedData.forEach(node => {
 			node.starttime = timeDataCleanUp(node.starttime);
 			node.stoptime = timeDataCleanUp(node.stoptime);
+			let currentYear = new Date();
+			currentYear = currentYear.getFullYear();
+			node.birthYear = currentYear - Number(node.birthYear);
 		});
 		const frequencyObj = {};
 		copiedData.forEach(node => {
@@ -250,18 +277,7 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 		clearInterval(stopInterval);
 		startTime = 0;
 		simStart = false;
-		// currentNodes.trans
 	}
-	// re-render our visualization whenever the view changes
-	// map.on('viewreset', function() {
-	// 	render();
-	// });
-	// map.on('move', function() {
-	// 	render();
-	// });
-
-	// render our initial visualization
-	// render();
 });
 
 function getMostPopularBike(frequencyObj) {
@@ -271,3 +287,19 @@ function getMostPopularBike(frequencyObj) {
 	});
 	return freqArr[0];
 }
+
+var pipsSteps = document.getElementById('pips-steps');
+
+noUiSlider.create(pipsSteps, {
+	range: range_all_sliders,
+	start: 0,
+	pips: {
+		mode: 'steps',
+		density: 3,
+		filter: filter500,
+		format: wNumb({
+			decimals: 2,
+			prefix: '$'
+		})
+	}
+});
