@@ -53,6 +53,38 @@ function setColor(d) {
 				stroke: 'black'
 			};
 		}
+	} else if (state.age) {
+		//birthYear
+		if (d.birthYear <= 24) {
+			//do something
+			return {
+				fill: 'orange',
+				stroke: 'orange'
+			};
+		} else if (d.birthYear >= 25 && d.birthYear <= 39) {
+			//do something
+			return {
+				fill: 'green',
+				stroke: 'green'
+			};
+		} else if (d.birthYear >= 40 && d.birthYear <= 54) {
+			//do something
+			return {
+				fill: 'purple',
+				stroke: 'purple'
+			};
+		} else if (d.birthYear >= 55) {
+			//do something
+			return {
+				fill: '#ef1f3f',
+				stroke: '#ef1f3f'
+			};
+		} else {
+			return {
+				fill: 'black',
+				stroke: 'black'
+			};
+		}
 	}
 	return {
 		fill: '#D8c320',
@@ -92,6 +124,13 @@ const ageToggle = d3.select('#age');
 ageToggle.on('click', () => {
 	state.age = true;
 	state.mostPopularBikeToggle = false;
+	state.gender = false;
+});
+
+const allButton = d3.select('#all');
+allButton.on('click', () => {
+	state.age = false;
+	state.mostPopularBike = false;
 	state.gender = false;
 });
 

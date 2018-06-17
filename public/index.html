@@ -20,7 +20,7 @@
       </header>
       <div id="app">
         <aside>
-          <div class="row">
+          <div class="row aside">
             <div class="col s12">
               <button id="start-button" class="waves-effect waves-light btn">Start simulation</button>
             </div>
@@ -43,26 +43,26 @@
                 </form>
                 <form action="#">
                   <p>
-                    <label>
-                      <input id="gender" type="radio" checked/>
+                    <label for="all">
+                      <input name="selections" id="all" type="radio" checked />
                       <span>All riders</span>
                     </label>
                   </p>
                   <p>
-                    <label>
-                      <input id="gender" type="radio" />
+                    <label for="gender">
+                      <input name="selections" id="gender" type="radio" />
                       <span>Gender split</span>
                     </label>
                   </p>
                   <p>
-                    <label>
-                      <input id="age" type="radio" />
+                    <label for="age">
+                      <input name="selections" id="age" type="radio" />
                       <span>Age split</span>
                     </label>
                   </p>
                   <p>
-                    <label>
-                      <input id="popular" type="radio" />
+                    <label for="popular">
+                      <input name="selections" id="popular" type="radio" />
                       <span>Most popular bike</span>
                     </label>
                   </p>
@@ -73,8 +73,9 @@
                 </form>
 
                 <h4 id="clock"></h4>
+                <hr>
                 <div class="legend-parent">
-                  <h3>Legend</h3>
+                  <h4 id="legend">Legend</h4>
                   <div class="legend-item">
                     <p>All riders in transit:</p>
                     <span class="legend-dots" style="background-color: #D8c320"></span>
@@ -91,7 +92,29 @@
                     <p>Did not identify:</p>
                     <span class="legend-dots" style="background-color: black"></span>
                   </div>
-
+                  <div class="legend-item">
+                    <p>Ages: </p>
+                    <div class="age-legend-item">
+                      <p>0-24</p>
+                      <span class="legend-dots" style="background-color: orange">
+                      </span>
+                    </div>
+                    <div class="age-legend-item">
+                      <p>25-39</p>
+                      <span class="legend-dots" style="background-color: green">
+                      </span>
+                    </div>
+                    <div class="age-legend-item">
+                      <p>40-54</p>
+                      <span class="legend-dots" style="background-color: purple">
+                      </span>
+                    </div>
+                    <div class="age-legend-item">
+                      <p>55+</p>
+                      <span class="legend-dots" style="background-color: #ef1f3f">
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
