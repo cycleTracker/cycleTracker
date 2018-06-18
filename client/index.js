@@ -5,8 +5,6 @@ const d3 = require('d3');
   * Instantiate the Map
   */
 
-//  MOST POPULAR BIKEID ["25697", 34]
-
 mapboxgl.accessToken =
 	'pk.eyJ1IjoiZnVsbHN0YWNram9uIiwiYSI6ImNqZ3M1OTcwcjAwMHMzNGxubXlxbHFxaHoifQ.LYHfQzOU5Hb3GF2JkOJYZQ';
 
@@ -54,27 +52,22 @@ function setColor(d) {
 			};
 		}
 	} else if (state.age) {
-		//birthYear
 		if (d.birthYear <= 24) {
-			//do something
 			return {
 				fill: 'orange',
 				stroke: 'orange'
 			};
 		} else if (d.birthYear >= 25 && d.birthYear <= 39) {
-			//do something
 			return {
 				fill: 'green',
 				stroke: 'green'
 			};
 		} else if (d.birthYear >= 40 && d.birthYear <= 54) {
-			//do something
 			return {
 				fill: 'purple',
 				stroke: 'purple'
 			};
 		} else if (d.birthYear >= 55) {
-			//do something
 			return {
 				fill: '#ef1f3f',
 				stroke: '#ef1f3f'
@@ -173,6 +166,7 @@ function timeDataCleanUp(time) {
 }
 
 d3.csv('citiBike_Data.csv').then(function(data) {
+  let dots;
 	let startTime = 0;
 	let simStart = false;
 	let copiedData;
@@ -211,7 +205,7 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 				'start time',
 				new Date((startTime * 1000) % 43200).toISOString().substr(11, 8)
 			);
-			let dots = svg
+			dots = svg
 				.selectAll('circle.dot')
 				.data(copiedData)
 				// .exit()
@@ -221,15 +215,6 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 				.filter(function(d) {
 					return filterNodes(d, startTime, previousTime);
 				})
-				// .attr('t', function(d) {
-				// 	//lifecycle for each node
-				// 	// radius of start position change = 250ms
-				// 	// delay before trip duration for 250ms
-				// 	// trip duration = (d.tripduration * 10)ms
-				// 	// node disapearing = 250ms
-				// 	//total lifecycle = 750 + trip duration
-				// 	return 750 + d.tripduration * 10;
-				// })
 				.attr('cx', function(d) {
 					var x = project(d, getStartLL).x;
 					return x;
@@ -309,16 +294,11 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 		});
 		console.log('freqobj', getMostPopularBike(frequencyObj));
 		stopRender();
-		let dots = svg.selectAll('circle.dot').data(copiedData);
+		dots = svg.selectAll('circle.dot').data(copiedData);
 		dots
 			.enter()
 			.append('circle')
 			.classed('dot', true);
-		// 	.each(d => {
-		// 		d.starttime = timeDataCleanUp(d.starttime);
-		// 		d.stoptime = timeDataCleanUp(d.stoptime);
-		// 	});
-		//calls set interval to populate dom based on time bikes/nodes are riding.
 		interval();
 	}
 	function pauseRender() {
