@@ -7,21 +7,124 @@
   <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
   <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet' />
   <link rel="stylesheet" href="./style.css"></link>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Righteous|Lobster+Two" rel="stylesheet">
+
 </head>
 
 <body>
-  <header>
-    <h1>cycleTracker</h1>
-  </header>
-  <div id="app">
-    <aside>
-      <p>testttt</p>
-      <button id="start-button">Start simulation</button>
-    </aside>
-    <div id="map">
+  <div class="row">
+    <div class="col s12">
+      <header>
+        <h1>cycleTracker</h1>
+      </header>
+      <div id="app">
+        <aside>
+          <div class="row aside">
+            <div class="col s12">
+              <button id="start-button" class="waves-effect waves-light btn">Start simulation</button>
+            </div>
+            <div class="col s12">
+              <button id="pause-button" class="waves-effect waves-light btn">Pause simulation</button>
+            </div>
+            <div class="col s12">
+              <button id="stop-button" class="waves-effect waves-light btn">Stop simulation</button>
+              <div>
+                <form action="#">
+                  <p class="range-field" id="parent-slider">
+                    <label>Simulation speed</label>
+                    <input type="range" id="slider" min="1" max="3" value="2" />
+                    <div id="speeds">
+                      <p>0.5x</p>
+                      <p>1.0x</p>
+                      <p>2.0x</p>
+                    </div>
+                  </p>
+                </form>
+                <form action="#">
+                  <p>
+                    <label for="all">
+                      <input name="selections" id="all" type="radio" checked />
+                      <span>All riders</span>
+                    </label>
+                  </p>
+                  <p>
+                    <label for="gender">
+                      <input name="selections" id="gender" type="radio" />
+                      <span>Gender split</span>
+                    </label>
+                  </p>
+                  <p>
+                    <label for="age">
+                      <input name="selections" id="age" type="radio" />
+                      <span>Age split</span>
+                    </label>
+                  </p>
+                  <p>
+                    <label for="popular">
+                      <input name="selections" id="popular" type="radio" />
+                      <span>Most popular bike</span>
+                    </label>
+                  </p>
+                </form>
+
+                <form action="#">
+
+                </form>
+
+                <h4 id="clock"></h4>
+                <hr>
+                <div class="legend-parent">
+                  <h4 id="legend">Legend</h4>
+                  <div class="legend-item">
+                    <p>All riders in transit:</p>
+                    <span class="legend-dots" style="background-color: #D8c320"></span>
+                  </div>
+                  <div class="legend-item">
+                    <p>Male:</p>
+                    <span class="legend-dots" style="background-color: #cc0000"></span>
+                  </div>
+                  <div class="legend-item">
+                    <p>Female:</p>
+                    <span class="legend-dots" style="background-color: #0479a0"></span>
+                  </div>
+                  <div class="legend-item">
+                    <p>Did not identify:</p>
+                    <span class="legend-dots" style="background-color: black"></span>
+                  </div>
+                  <div class="legend-item">
+                    <p>Ages: </p>
+                    <div class="age-legend-item">
+                      <p>0-24</p>
+                      <span class="legend-dots" style="background-color: orange">
+                      </span>
+                    </div>
+                    <div class="age-legend-item">
+                      <p>25-39</p>
+                      <span class="legend-dots" style="background-color: green">
+                      </span>
+                    </div>
+                    <div class="age-legend-item">
+                      <p>40-54</p>
+                      <span class="legend-dots" style="background-color: purple">
+                      </span>
+                    </div>
+                    <div class="age-legend-item">
+                      <p>55+</p>
+                      <span class="legend-dots" style="background-color: #ef1f3f">
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </aside>
+        <div id="map">
+        </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <script src="./bundle.js"></script>
+    <script src="./bundle.js"></script>
 </body>
 
 </html>
