@@ -1,12 +1,7 @@
 /* * {
 	box-sizing: border-box;
-}
-
-body {
-	margin: 0;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	background-color: #c1b5ad;
 } */
+
 
 #app {
 	display: flex;
@@ -15,8 +10,8 @@ body {
 
 #map {
 	flex: 5;
-	/* height: calc(100vh - 3rem); */
-	height: auto;
+	height: calc(100vh - 3rem);
+	/* height: 100vh; */
 	overflow: hidden;
 }
 
@@ -62,6 +57,7 @@ h1 {
 	text-align: center;
 	font-family: 'Lobster Two';
 	font-style: italic;
+	margin: 1rem !important;
 }
 
 .legend-parent {
