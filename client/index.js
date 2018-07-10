@@ -136,7 +136,6 @@ slider.on('change', () => {
 	} else if (d3.event.target.value === '3') {
 		state.simulationSpeed = 2;
 	}
-	console.log('sim speed', state.simulationSpeed);
 });
 
 const clock = d3.select('#clock');
@@ -165,153 +164,150 @@ function timeDataCleanUp(time) {
 	return timeTotalSeconds;
 }
 
-d3.csv('citiBike_Data.csv').then(function(data) {
-	let dots;
-	let startTime = 0;
-	let simStart = false;
-	let copiedData;
-	console.log('data', data[0]);
+d3.csv('https://s3.us-east-2.amazonaws.com/replicode/Citibike_Data.csv').then(
+	function(data) {
+		let dots;
+		let startTime = 0;
+		let simStart = false;
+		let copiedData;
 
-	const startButton = d3.select('#start-button');
-	startButton.on('click', function(data) {
-		if (!simStart) {
-			render();
-		}
-		simStart = true;
-	});
-
-	const pauseButton = d3.select('#pause-button');
-	pauseButton.on('click', function(data) {
-		pauseRender();
-	});
-
-	const stopButton = d3.select('#stop-button');
-	stopButton.on('click', function(data) {
-		stopRender();
-	});
-
-	let stopInterval;
-	const interval = () => {
-		stopInterval = setInterval(function() {
-			let previousTime;
-			previousTime = startTime;
-			startTime += 225;
-			clock.text(new Date(startTime * 1000).toISOString().substr(11, 8));
-			if (startTime === 86400) {
-				clearInterval(stopInterval);
-				stopRender();
+		const startButton = d3.select('#start-button');
+		startButton.on('click', function(data) {
+			if (!simStart) {
+				render();
 			}
-			console.log(
-				'start time',
-				new Date((startTime * 1000) % 43200).toISOString().substr(11, 8)
-			);
-			dots = svg
-				.selectAll('circle.dot')
-				.filter(function(d) {
-					return filterNodes(d, startTime, previousTime);
-				})
-				.attr('cx', function(d) {
-					var x = project(d, getStartLL).x;
-					return x;
-				})
-				.attr('cy', d => {
-					var y = project(d, getStartLL).y;
-
-					return y;
-				})
-				// .style('fill', '#007c3a')
-				// .style('fill-opacity', 0.4)
-				// .style('stroke', '#00632e')
-				// .style('stroke-width', 2)
-				// .attr('r', 6)
-				// .transition()
-				// .duration(250 / state.simulationSpeed)
-				.attr('r', () => {
-					return state.mostPopularBikeToggle ? 6 : 3;
-				})
-				.style('fill', function(d) {
-					return setColor(d).fill;
-				})
-
-				.style('stroke', function(d) {
-					return setColor(d).stroke;
-				})
-				.style('stroke-width', 2)
-				.style('fill-opacity', () => {
-					return state.mostPopularBikeToggle ? 0.7 : 0.4;
-				})
-				.transition()
-				.delay(250 / state.simulationSpeed)
-				//ttest
-				// .transition()
-				.attr('cx', d => {
-					var x = project(d, getEndLL).x;
-					return x;
-				})
-				.attr('cy', d => {
-					var y = project(d, getEndLL).y;
-					return y;
-				})
-				.duration(function(d) {
-					//this would be the correct ratio for 900 seconds per real time second;
-					// return d.tripduration / 900 / state.simulationSpeed;
-					return d.tripduration / 4 / state.simulationSpeed;
-				})
-				// .transition()
-				// .duration(0)
-				// .style('fill', '#cc0000')
-				// .style('stroke', '#ad0000')
-				// .style('fill-opacity', 0.4)
-				// .transition()
-				// .duration(100 / state.simulationSpeed)
-				// .attr('r', 9)
-				// .style('fill-opacity', 0)
-				// .style('stroke-width', 0)
-				.remove();
-		}, 250 / state.simulationSpeed);
-	};
-
-	function render() {
-		copiedData = data.map(row => {
-			return Object.assign({}, row);
+			simStart = true;
 		});
 
-		copiedData.forEach(node => {
-			node.starttime = timeDataCleanUp(node.starttime);
-			node.stoptime = timeDataCleanUp(node.stoptime);
-			let currentYear = new Date();
-			currentYear = currentYear.getFullYear();
-			node.birthYear = currentYear - Number(node.birthYear);
+		const pauseButton = d3.select('#pause-button');
+		pauseButton.on('click', function(data) {
+			pauseRender();
 		});
-		const frequencyObj = {};
-		copiedData.forEach(node => {
-			frequencyObj[node.bikeid] = frequencyObj[node.bikeid] + 1 || 1;
-		});
-		console.log('freqobj', getMostPopularBike(frequencyObj));
-		stopRender();
-		dots = svg.selectAll('circle.dot').data(copiedData);
-		dots
-			.enter()
-			.append('circle')
-			.classed('dot', true);
-		interval();
-	}
-	function pauseRender() {
-		const currentNodes = svg.selectAll('circle.dot');
-		currentNodes.transition().duration(0);
-		clearInterval(stopInterval);
-	}
 
-	function stopRender() {
-		//do stuff to resume render
-		const currentNodes = svg.selectAll('circle.dot');
-		currentNodes.remove();
-		clearInterval(stopInterval);
-		startTime = 0;
-		simStart = false;
-		clock.text('00:00:00');
+		const stopButton = d3.select('#stop-button');
+		stopButton.on('click', function(data) {
+			stopRender();
+		});
+
+		let stopInterval;
+		const interval = () => {
+			stopInterval = setInterval(function() {
+				let previousTime;
+				previousTime = startTime;
+				startTime += 225;
+				clock.text(new Date(startTime * 1000).toISOString().substr(11, 8));
+				if (startTime === 86400) {
+					clearInterval(stopInterval);
+					stopRender();
+				}
+
+				dots = svg
+					.selectAll('circle.dot')
+					.filter(function(d) {
+						return filterNodes(d, startTime, previousTime);
+					})
+					.attr('cx', function(d) {
+						var x = project(d, getStartLL).x;
+						return x;
+					})
+					.attr('cy', d => {
+						var y = project(d, getStartLL).y;
+
+						return y;
+					})
+					// .style('fill', '#007c3a')
+					// .style('fill-opacity', 0.4)
+					// .style('stroke', '#00632e')
+					// .style('stroke-width', 2)
+					// .attr('r', 6)
+					// .transition()
+					// .duration(250 / state.simulationSpeed)
+					.attr('r', () => {
+						return state.mostPopularBikeToggle ? 6 : 3;
+					})
+					.style('fill', function(d) {
+						return setColor(d).fill;
+					})
+
+					.style('stroke', function(d) {
+						return setColor(d).stroke;
+					})
+					.style('stroke-width', 2)
+					.style('fill-opacity', () => {
+						return state.mostPopularBikeToggle ? 0.7 : 0.4;
+					})
+					.transition()
+					.delay(250 / state.simulationSpeed)
+					//ttest
+					// .transition()
+					.attr('cx', d => {
+						var x = project(d, getEndLL).x;
+						return x;
+					})
+					.attr('cy', d => {
+						var y = project(d, getEndLL).y;
+						return y;
+					})
+					.duration(function(d) {
+						//this would be the correct ratio for 900 seconds per real time second;
+						// return d.tripduration / 900 / state.simulationSpeed;
+						return d.tripduration / 4 / state.simulationSpeed;
+					})
+					// .transition()
+					// .duration(0)
+					// .style('fill', '#cc0000')
+					// .style('stroke', '#ad0000')
+					// .style('fill-opacity', 0.4)
+					// .transition()
+					// .duration(100 / state.simulationSpeed)
+					// .attr('r', 9)
+					// .style('fill-opacity', 0)
+					// .style('stroke-width', 0)
+					.remove();
+			}, 250 / state.simulationSpeed);
+		};
+
+		function render() {
+			copiedData = data.map(row => {
+				return Object.assign({}, row);
+			});
+
+			copiedData.forEach(node => {
+				node.starttime = timeDataCleanUp(node.starttime);
+				node.stoptime = timeDataCleanUp(node.stoptime);
+				let currentYear = new Date();
+				currentYear = currentYear.getFullYear();
+				node.birthYear = currentYear - Number(node.birthYear);
+			});
+			const frequencyObj = {};
+			copiedData.forEach(node => {
+				frequencyObj[node.bikeid] = frequencyObj[node.bikeid] + 1 || 1;
+			});
+			stopRender();
+			dots = svg.selectAll('circle.dot').data(copiedData);
+			dots
+				.enter()
+				.append('circle')
+				.classed('dot', true);
+			interval();
+		}
+		function pauseRender() {
+			const currentNodes = svg.selectAll('circle.dot');
+			currentNodes.transition().duration(0);
+			clearInterval(stopInterval);
+		}
+
+		function stopRender() {
+			//do stuff to resume render
+			const currentNodes = svg.selectAll('circle.dot');
+			currentNodes.remove();
+			clearInterval(stopInterval);
+			startTime = 0;
+			simStart = false;
+			clock.text('00:00:00');
+		}
 	}
-});
+);
 
 function getMostPopularBike(frequencyObj) {
 	let freqArr = Object.entries(frequencyObj);
