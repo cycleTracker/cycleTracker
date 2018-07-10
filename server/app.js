@@ -23,7 +23,7 @@ app.use(function(err, req, res, next) {
 });
 
 // listen on a port
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, function() {
 	console.log('The server is listening closely on port', port);
 });
