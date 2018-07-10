@@ -9703,7 +9703,7 @@ function timeDataCleanUp(time) {
 }
 
 d3.csv('citiBike_Data.csv').then(function(data) {
-  let dots;
+	let dots;
 	let startTime = 0;
 	let simStart = false;
 	let copiedData;
@@ -9744,11 +9744,6 @@ d3.csv('citiBike_Data.csv').then(function(data) {
 			);
 			dots = svg
 				.selectAll('circle.dot')
-				.data(copiedData)
-				// .exit()
-				// .enter()
-				// .append('circle')
-				// .classed('dot', true)
 				.filter(function(d) {
 					return filterNodes(d, startTime, previousTime);
 				})

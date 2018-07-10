@@ -1,46 +1,45 @@
-/* * {
-	box-sizing: border-box;
-} */
-
-
+#header {
+	display: flex;
+	height: 5vh;
+	width: 100vw;
+}
 #app {
 	display: flex;
 	font-family: 'Righteous';
+	flex-direction: row;
+	width: 100vw;
+	height: 95vh;
 }
 
 #map {
-	flex: 5;
-	height: calc(100vh - 3rem);
+	/* flex: 5; */
 	/* height: 100vh; */
-	overflow: hidden;
+	/* height: auto; */
+	/* height: 100vh; */
+	/* overflow: hidden; */
+	/* height: auto; */
+	height: 95vh;
+	flex-basis: 65vw;
+	width: 65vw;
 }
 
 aside {
-	flex: 1;
+	/* flex: 1; */
+	/* height: 50rem; */
+	/* height: 100rem; */
+	/* overflow: hidden; */
+	height: 95vh;
 	display: flex;
 	flex-direction: column;
 	z-index: 2;
+	flex-basis: 35vw;
+	width: 35vw;
+	min-width: 415px;
 }
-/* canvas {
-	position: absolute;
-	width: calc(100vh - 3rem);
-} */
 
 body {
 	margin: 0;
-
-	/* position: fixed; */
-	/* top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0; */
 }
-
-/* #map {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-} */
 
 svg {
 	position: absolute;
@@ -73,20 +72,21 @@ h1 {
 	align-items: baseline;
 	justify-content: space-between;
 	font-size: 1.25rem;
+	width: 35vw;
 }
 .legend-item p {
 	margin: 0;
 }
 .legend-dots {
-	height: 40px;
-	width: 40px;
+	height: 2.5rem;
+	width: 2.5rem;
 	border-radius: 50%;
 	margin: 0 1rem;
 }
 .age-legend-item {
 	display: flex;
 	flex-direction: column;
-	/* align-content: center; */
+	align-content: center;
 	margin: 1rem;
 }
 .age-legend-item p {
