@@ -12,22 +12,12 @@
 }
 
 #map {
-	/* flex: 5; */
-	/* height: 100vh; */
-	/* height: auto; */
-	/* height: 100vh; */
-	/* overflow: hidden; */
-	/* height: auto; */
 	height: 95vh;
 	flex-basis: 65vw;
 	width: 65vw;
 }
 
 aside {
-	/* flex: 1; */
-	/* height: 50rem; */
-	/* height: 100rem; */
-	/* overflow: hidden; */
 	height: 95vh;
 	display: flex;
 	flex-direction: column;
