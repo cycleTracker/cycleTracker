@@ -28,11 +28,22 @@ const state = {
 	mostPopularBikeToggle: false,
 	age: false
 };
-
-//gender 1 === male
-// gender 2 === female
-// gender 0 === unknown
-
+/* 
+setColor function takes in a data point 
+and returns a style for each dot added 
+to the node depending on user selected 
+filters which are saved in the state 
+*/
+/*  ----gender----
+ 	  1 === male
+ 	  2 === female
+	  0 === unknown 
+	----age----  
+	  0 - 24
+	  25 - 39
+	  40 - 54
+	  55+
+*/
 function setColor(d) {
 	if (state.gender) {
 		if (d.gender === '1') {
