@@ -21,6 +21,7 @@ var map = new mapboxgl.Map({
 });
 map.scrollZoom.disable();
 
+//state keeps track of any filters applied by the user
 const state = {
 	gender: false,
 	simulationSpeed: 1,
@@ -28,11 +29,22 @@ const state = {
 	mostPopularBikeToggle: false,
 	age: false
 };
-
-//gender 1 === male
-// gender 2 === female
-// gender 0 === unknown
-
+/* 
+setColor function takes in a data point 
+and returns a style for each dot added 
+to the node depending on user selected 
+filters which are saved in the state 
+*/
+/*  ----gender----
+ 	  1 === male
+ 	  2 === female
+	  0 === unknown 
+	----age----  
+	  0 - 24
+	  25 - 39
+	  40 - 54
+	  55+
+*/
 function setColor(d) {
 	if (state.gender) {
 		if (d.gender === '1') {
@@ -84,7 +96,14 @@ function setColor(d) {
 		stroke: '#b7a51b'
 	};
 }
-
+/*
+filterNodes takes a node with data regarding a cycler's trip,
+the current time of the simulation (startTime), and the previous
+time of the simulation. The function returns a boolean based on
+if the start time of the current cycler's trip is between the 
+previous time of the simulation and the current one. This boolean
+will be used to filter which nodes should be added to the DOM
+ */
 function filterNodes(node, startTime, previousTime) {
 	if (
 		node.starttime <= startTime % 86400 &&
