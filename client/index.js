@@ -96,7 +96,14 @@ function setColor(d) {
 		stroke: '#b7a51b'
 	};
 }
-
+/*
+filterNodes takes a node with data regarding a cycler's trip,
+the current time of the simulation (startTime), and the previous
+time of the simulation. The function returns a boolean based on
+if the start time of the current cycler's trip is between the 
+previous time of the simulation and the current one. This boolean
+will be used to filter which nodes should be added to the DOM
+ */
 function filterNodes(node, startTime, previousTime) {
 	if (
 		node.starttime <= startTime % 86400 &&
