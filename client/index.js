@@ -21,6 +21,7 @@ var map = new mapboxgl.Map({
 });
 map.scrollZoom.disable();
 
+//state keeps track of any filters applied by the user
 const state = {
 	gender: false,
 	simulationSpeed: 1,
