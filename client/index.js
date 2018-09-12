@@ -118,6 +118,16 @@ function filterNodes(node, startTime, previousTime) {
 	return false;
 }
 
+/*
+The next several variables, genderToggle through slider,
+use d3 add event listeners to filters and so that users
+can change the speed of the simulation.
+*/
+
+/*
+Selects elements with an id of gender and listens for a 
+click event that will apply the filter for gender
+*/
 const genderToggle = d3.select('#gender');
 genderToggle.on('click', () => {
 	state.gender = true;
@@ -125,6 +135,10 @@ genderToggle.on('click', () => {
 	state.mostPopularBikeToggle = false;
 });
 
+/*
+Selects elements with an id of popular and listens for a 
+click event that will apply the filter for most popular bike
+*/
 const popularToggle = d3.select('#popular');
 popularToggle.on('click', () => {
 	state.mostPopularBikeToggle = true;
@@ -132,6 +146,10 @@ popularToggle.on('click', () => {
 	state.age = false;
 });
 
+/*
+Selects elements with an id of age and listens for a 
+click event that will apply the filter for age
+*/
 const ageToggle = d3.select('#age');
 ageToggle.on('click', () => {
 	state.age = true;
@@ -139,6 +157,10 @@ ageToggle.on('click', () => {
 	state.gender = false;
 });
 
+/*
+Selects elements with an id of all and listens for a 
+click event that removes all filters
+*/
 const allButton = d3.select('#all');
 allButton.on('click', () => {
 	state.age = false;
@@ -146,6 +168,10 @@ allButton.on('click', () => {
 	state.gender = false;
 });
 
+/*
+Selects elements with an id of slider and listens for a 
+change that will affect the speed of the simulation
+*/
 const slider = d3.select('#slider');
 slider.on('change', () => {
 	if (d3.event.target.value === '2') {
