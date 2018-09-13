@@ -207,6 +207,12 @@ function getEndLL(d) {
 	return new mapboxgl.LngLat(+d.endStationLongitude, +d.endStationLatitude);
 }
 
+/*
+This function takes in a time which the data set has in the 
+format of 'YYYY-MM-DD HH:MM:SS' and converts it to the the total
+seconds that have passed for that day. One day has 86,400s so
+12:35:15 = 45,315s.
+*/
 function timeDataCleanUp(time) {
 	const timeArray = time.split(' ')[1].split(':');
 	const hour = Number(timeArray[0] * 3600);
