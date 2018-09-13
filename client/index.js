@@ -189,13 +189,20 @@ const clock = d3.select('#clock');
 var container = map.getCanvasContainer();
 var svg = d3.select(container).append('svg');
 
+/*
+This function takes a data point and a callback and returns
+an object with the x and y coordiates on the map that relate
+to the latitude and longitude of the data point.
+*/
 function project(d, cb) {
 	return map.project(cb(d));
 }
+
+//This funciton takes a data point and finds the latitude and longitude of the bikes starting location on the map
 function getStartLL(d) {
 	return new mapboxgl.LngLat(+d.startStationLongitude, +d.startStationLatitude);
 }
-
+//This funciton takes a data point and finds the latitude and longitude of the bikes ending location on the map
 function getEndLL(d) {
 	return new mapboxgl.LngLat(+d.endStationLongitude, +d.endStationLatitude);
 }
