@@ -222,6 +222,7 @@ function timeDataCleanUp(time) {
 	return timeTotalSeconds;
 }
 
+
 d3.csv('https://s3.us-east-2.amazonaws.com/replicode/Citibike_Data.csv').then(
 	function(data) {
 		let dots;
