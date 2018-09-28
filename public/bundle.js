@@ -9558,6 +9558,7 @@ var map = new mapboxgl.Map({
 });
 map.scrollZoom.disable();
 
+//state keeps track of any filters applied by the user
 const state = {
 	gender: false,
 	simulationSpeed: 1,
@@ -9565,11 +9566,22 @@ const state = {
 	mostPopularBikeToggle: false,
 	age: false
 };
-
-//gender 1 === male
-// gender 2 === female
-// gender 0 === unknown
-
+/* 
+setColor function takes in a data point 
+and returns a style for each dot added 
+to the node depending on user selected 
+filters which are saved in the state 
+*/
+/*  ----gender----
+ 	  1 === male
+ 	  2 === female
+	  0 === unknown 
+	----age----  
+	  0 - 24
+	  25 - 39
+	  40 - 54
+	  55+
+*/
 function setColor(d) {
 	if (state.gender) {
 		if (d.gender === '1') {
@@ -9621,7 +9633,14 @@ function setColor(d) {
 		stroke: '#b7a51b'
 	};
 }
-
+/*
+filterNodes takes a node with data regarding a cycler's trip,
+the current time of the simulation (startTime), and the previous
+time of the simulation. The function returns a boolean based on
+if the start time of the current cycler's trip is between the 
+previous time of the simulation and the current one. This boolean
+will be used to filter which nodes should be added to the DOM
+ */
 function filterNodes(node, startTime, previousTime) {
 	if (
 		node.starttime <= startTime % 86400 &&
@@ -9636,6 +9655,16 @@ function filterNodes(node, startTime, previousTime) {
 	return false;
 }
 
+/*
+The next several variables, genderToggle through slider,
+use d3 add event listeners to filters and so that users
+can change the speed of the simulation.
+*/
+
+/*
+Selects elements with an id of gender and listens for a 
+click event that will apply the filter for gender
+*/
 const genderToggle = d3.select('#gender');
 genderToggle.on('click', () => {
 	state.gender = true;
@@ -9643,6 +9672,10 @@ genderToggle.on('click', () => {
 	state.mostPopularBikeToggle = false;
 });
 
+/*
+Selects elements with an id of popular and listens for a 
+click event that will apply the filter for most popular bike
+*/
 const popularToggle = d3.select('#popular');
 popularToggle.on('click', () => {
 	state.mostPopularBikeToggle = true;
@@ -9650,6 +9683,10 @@ popularToggle.on('click', () => {
 	state.age = false;
 });
 
+/*
+Selects elements with an id of age and listens for a 
+click event that will apply the filter for age
+*/
 const ageToggle = d3.select('#age');
 ageToggle.on('click', () => {
 	state.age = true;
@@ -9657,6 +9694,10 @@ ageToggle.on('click', () => {
 	state.gender = false;
 });
 
+/*
+Selects elements with an id of all and listens for a 
+click event that removes all filters
+*/
 const allButton = d3.select('#all');
 allButton.on('click', () => {
 	state.age = false;
@@ -9664,6 +9705,10 @@ allButton.on('click', () => {
 	state.gender = false;
 });
 
+/*
+Selects elements with an id of slider and listens for a 
+change that will affect the speed of the simulation
+*/
 const slider = d3.select('#slider');
 slider.on('change', () => {
 	if (d3.event.target.value === '2') {
@@ -9681,17 +9726,30 @@ const clock = d3.select('#clock');
 var container = map.getCanvasContainer();
 var svg = d3.select(container).append('svg');
 
+/*
+This function takes a data point and a callback and returns
+an object with the x and y coordiates on the map that relate
+to the latitude and longitude of the data point.
+*/
 function project(d, cb) {
 	return map.project(cb(d));
 }
+
+//This funciton takes a data point and finds the latitude and longitude of the bikes starting location on the map
 function getStartLL(d) {
 	return new mapboxgl.LngLat(+d.startStationLongitude, +d.startStationLatitude);
 }
-
+//This funciton takes a data point and finds the latitude and longitude of the bikes ending location on the map
 function getEndLL(d) {
 	return new mapboxgl.LngLat(+d.endStationLongitude, +d.endStationLatitude);
 }
 
+/*
+This function takes in a time which the data set has in the 
+format of 'YYYY-MM-DD HH:MM:SS' and converts it to the the total
+seconds that have passed for that day. One day has 86,400s so
+12:35:15 = 45,315s.
+*/
 function timeDataCleanUp(time) {
 	const timeArray = time.split(' ')[1].split(':');
 	const hour = Number(timeArray[0] * 3600);
@@ -9700,6 +9758,7 @@ function timeDataCleanUp(time) {
 	const timeTotalSeconds = hour + minutes + seconds;
 	return timeTotalSeconds;
 }
+
 
 d3.csv('https://s3.us-east-2.amazonaws.com/replicode/Citibike_Data.csv').then(
 	function(data) {
